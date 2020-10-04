@@ -8,6 +8,7 @@ module.exports = {
     password : '123',
     database : 'nlw2'
   },
+  useNullAsDefault: true,
   migrations :{
     directory: path.resolve(__dirname, 'src', 'database', 'migrations')
   }

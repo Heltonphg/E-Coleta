@@ -7,7 +7,8 @@ const connection = knex({
     user : 'postgres',
     password : '123',
     database : 'nlw2'
-  }
+  },
+  useNullAsDefault: true,
 });
 
 export default connection;
