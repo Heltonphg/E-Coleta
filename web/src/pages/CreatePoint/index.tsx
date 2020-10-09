@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import './styles.css';
 import logo from '../../assets/logo.svg';
 import { Link } from 'react-router-dom';
@@ -30,6 +30,13 @@ const CreatePoint: React.FC = () => {
 
   const [selectedUf, setSelectedUf] = useState('0');
   const [selectedCity, setSelectedCity] = useState('0');
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+
+  const [formData, setFormDate] = useState({
+    name: '',
+    email: '',
+    whatsap: ''
+  });
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(position => {
@@ -76,13 +83,48 @@ const CreatePoint: React.FC = () => {
   }
 
   function handleMapClick(event: LeafletMouseEvent) {
-    console.log(event.latlng);
     setSelectedPosition(
       [
         event.latlng.lat,
         event.latlng.lng,
       ]
     )
+  }
+
+  function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
+    const { name, value } = event.target;
+    setFormDate({ ...formData, [name]: value });
+  }
+
+  function handleSelectItem(id: number) {
+    if (selectedItems.includes(id)) {
+      const items = selectedItems.filter(items => items != id);
+      setSelectedItems(items);
+    }
+    else {
+      setSelectedItems([...selectedItems, id]);
+    }
+  }
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+    const { name, email, whatsap } = formData;
+    const uf = selectedUf;
+    const city = selectedCity;
+    const [latitude, longitude] = selectedPosition;
+    const items = selectedItems;
+    const data = {
+      name,
+      email,
+      whatsap,
+      uf,
+      city,
+      latitude,
+      longitude,
+      items
+    }
+    await api.post('/points', data);
+    alert('Ponto de coleta criado')
   }
 
   return (
@@ -94,7 +136,7 @@ const CreatePoint: React.FC = () => {
           Voltar para home
         </Link>
       </header>
-      <form>
+      <form onSubmit={handleSubmit}>
         <h1>Cadastro do <br /> ponto de coleta</h1>
 
         <fieldset>
@@ -108,6 +150,7 @@ const CreatePoint: React.FC = () => {
               type="text"
               name="name"
               id="name"
+              onChange={handleInputChange}
             />
           </div>
 
@@ -118,14 +161,16 @@ const CreatePoint: React.FC = () => {
                 type="email"
                 name="email"
                 id="email"
+                onChange={handleInputChange}
               />
             </div>
             <div className="field">
-              <label htmlFor="Whatsapp">Whatsapp</label>
+              <label htmlFor="whatsap">whatsapp</label>
               <input
                 type="text"
-                name="Whatsapp"
-                id="Whatsapp"
+                name="whatsap"
+                id="whatsap"
+                onChange={handleInputChange}
               />
             </div>
           </div>
@@ -187,7 +232,13 @@ const CreatePoint: React.FC = () => {
             {
               itens.map(item => {
                 return (
-                  <li key={item.id}>
+                  <li
+                    className={
+                      selectedItems.includes(item.id) ? 'selected' : ''
+                    }
+                    key={item.id}
+                    onClick={() => handleSelectItem(item.id)}
+                  >
                     <img src={item.image_url} alt={item.name} />
                     <span>{item.name}</span>
                   </li>
