@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import './styles.css';
 import logo from '../../assets/logo.svg';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import api from '../../services/api';
@@ -37,6 +37,8 @@ const CreatePoint: React.FC = () => {
     email: '',
     whatsap: ''
   });
+
+  const history = useHistory();
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(position => {
@@ -125,6 +127,7 @@ const CreatePoint: React.FC = () => {
     }
     await api.post('/points', data);
     alert('Ponto de coleta criado')
+    history.push('/');
   }
 
   return (
