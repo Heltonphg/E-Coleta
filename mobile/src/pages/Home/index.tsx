@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Image, Text, ImageBackground } from 'react-native';
-
+import { RectButton } from 'react-native-gesture-handler';
+import { Feather as Icon } from '@expo/vector-icons'
 const Home: React.FC = () => {
   return (
     <ImageBackground
@@ -12,6 +13,17 @@ const Home: React.FC = () => {
         <Image source={require('../../assets/logo.png')} />
         <Text style={styles.title}>Seu marketplace de coleta de resíduos</Text>
         <Text style={styles.description}>Ajudamos pessoas a encontrarem pontos de coleta de forma eficiente</Text>
+      </View>
+
+      <View style={styles.footer}>
+        <RectButton style={styles.button} onPress={() => { }}>
+          <View style={styles.buttonIcon}>
+            <Icon name="arrow-right" color="#fff" size={24} />
+          </View>
+          <Text style={styles.buttonText}>
+            Entrar
+          </Text>
+        </RectButton>
       </View>
     </ImageBackground>
   );
@@ -83,7 +95,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#FFF",
     fontFamily: "Roboto_500Medium",
-    fontSize: 16,
+    fontSize: 19,
   },
 });
 
